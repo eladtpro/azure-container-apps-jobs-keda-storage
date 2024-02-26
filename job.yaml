@@ -1,0 +1,54 @@
+id: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/jobs/openaofu
+identity:
+  type: None
+location: West Europe
+name: openaofu
+properties:
+  configuration:
+    dapr: null
+    eventTriggerConfig:
+      parallelism: 1
+      replicaCompletionCount: 1
+      scale:
+        maxExecutions: 1
+        minExecutions: 0
+        pollingInterval: 30
+        rules:
+        - auth:
+          - secretRef: connection-string-secret
+            triggerParameter: connection
+          metadata:
+            blobContainerName: opentofu-requests
+            blobCount: '1'
+          name: blob
+          type: azure-blob
+    manualTriggerConfig: null
+    registries: null
+    replicaRetryLimit: 0
+    replicaTimeout: 1800
+    scheduleTriggerConfig: null
+    secrets:
+    - name: connection-string-secret
+    triggerType: Event
+  environmentId: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/managedEnvironments/env-container-apps-environment
+  eventStreamEndpoint: https://westeurope.azurecontainerapps.dev/subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/containerApps/openaofu/eventstream
+  provisioningState: Succeeded
+  template:
+    containers:
+    - image: debian:latest
+      name: openaofu
+      volumeMounts:
+      - volumeName: mounted-azure-file-volume
+        mountPath: /var/requests
+      resources:
+        cpu: 0.25
+        ephemeralStorage: 1Gi
+        memory: 0.5Gi
+    initContainers: null
+    volumes:
+    - name: mounted-azure-file-volume
+      storageName: acamountedshare
+      storageType: AzureFile
+  workloadProfileName: null
+resourceGroup: azure-container-apps
+type: Microsoft.App/jobs

@@ -1,8 +1,8 @@
-id: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/jobs/openaofu
+id: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/jobs/opentofu
 identity:
   type: None
 location: West Europe
-name: openaofu
+name: opentofu
 properties:
   configuration:
     dapr: null
@@ -31,12 +31,12 @@ properties:
     - name: connection-string-secret
     triggerType: Event
   environmentId: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/managedEnvironments/env-container-apps-environment
-  eventStreamEndpoint: https://westeurope.azurecontainerapps.dev/subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/containerApps/openaofu/eventstream
+  eventStreamEndpoint: https://westeurope.azurecontainerapps.dev/subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/containerApps/opentofu/eventstream
   provisioningState: Succeeded
   template:
     containers:
-    - image: debian:latest
-      name: openaofu
+    - image: python:latest
+      name: opentofu
       volumeMounts:
       - volumeName: mounted-azure-file-volume
         mountPath: /var/requests

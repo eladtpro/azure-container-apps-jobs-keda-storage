@@ -3,10 +3,12 @@ LOCATION="westeurope"
 STORAGE_ACCOUNT_NAME="stcontainerappsmount"
 STORAGE_ACCOUNT_KEY="<STORAGE_ACCOUNT_KEY>"
 STORAGE_SHARE_NAME="acamountedshare"
-JOB_NAME="openaofu"
+JOB_NAME="opentofu"
 ENVIRONMENT_NAME="env-container-apps-environment"
 BLOB_CONTAINER_NAME="opentofu-requests"
 STORAGE_CONNECTION_STRING="DefaultEndpointsProtocol=https;AccountName=stcontainerappsmount;AccountKey=XeJQgBRPEttJ13oLEOKpc68GTeLBPORgErrSH0ubesK9W5pk6deUaqciXKb1zM1c/GbXkeSjDXYI+ASt4ndHXQ==;EndpointSuffix=core.windows.net"
+SUBSCRIPTION_ID=977171a9-6bfd-49c4-a496-018d3312466e
+
 
 # create a resource group
 az group create \
@@ -57,3 +59,8 @@ az containerapp job update \
   --resource-group $RESOURCE_GROUP \
   --yaml job.yaml \
   --output table
+
+
+  az ad sp create-for-rbac --name $JOB_NAME --role contributor \
+                            --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP \
+                            --json-auth

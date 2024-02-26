@@ -15,7 +15,7 @@ Container apps and jobs run in the same [environment](https://learn.microsoft.co
 RESOURCE_GROUP="azure-container-apps"
 LOCATION="westeurope"
 ENVIRONMENT_NAME="env-container-apps-environment"
-JOB_NAME="openaofu"
+JOB_NAME="opentofu"
 BLOB_CONTAINER_NAME="opentofu-requests"
 BLOB_CONNECTION_STRING="<QUEUE_CONNECTION_STRING>"
 ```

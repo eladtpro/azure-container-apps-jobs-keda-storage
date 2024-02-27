@@ -34,7 +34,7 @@ else
     echo "Environment $name already exists."
 fi
 
-echo "Checking if the blob container $JOB_NAME exists..."
+echo "Checking if the container app job $JOB_NAME exists..."
 names=$(az containerapp job list --resource-group=$RESOURCE_GROUP --query "[].name" -o tsv)
 if [[ $names == *"$JOB_NAME"* ]]; then
     echo "Job $JOB_NAME already exists in $names."
@@ -44,7 +44,7 @@ else
       --trigger-type "Event" \
       --replica-timeout 1800 --replica-retry-limit 0 --replica-completion-count 1 --parallelism 1 \
       --image $JOB_IMAGE \
-      --registry-serveer $JOB_REGISTRY_SERVER \
+      --registry-server $JOB_REGISTRY_SERVER \
       --registry-identity $JOB_REGISTRY_IDENTITY \
       --cpu "0.25" --memory "0.5Gi" \
       --min-executions 0 \
@@ -57,11 +57,11 @@ else
       --env-vars "MOUNT_PATH=$MOUNT_PATH" "AZURE_STORAGE_CONNECTION_STRING=secretref:connection-string-secret"
 fi
 
-# # show the job yaml
-# az containerapp job show \
-#   --name $JOB_NAME \
-#   --resource-group $RESOURCE_GROUP \
-#   --output yaml > job.yaml
+# show the job yaml
+az containerapp job show \
+  --name $JOB_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --output yaml > job.yaml
 
 # # update the job mounted volumes
 # # https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts-azure-files?tabs=bash#create-the-storage-mount

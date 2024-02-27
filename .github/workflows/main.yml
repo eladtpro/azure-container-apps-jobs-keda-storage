@@ -14,4 +14,4 @@ jobs:
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
         - name: Build and push opentofu image to ACR (${{ vars.CONTAINER_REGISTRY }})
-          run: az acr build --image opentofu:latest --registry ${{ vars.CONTAINER_REGISTRY }} -g ${{ vars.RESOURCE_GROUP }} -f ./app/Dockerfile ./app/
+          run: az acr build --image opentofu:latest --registry ${{ vars.CONTAINER_REGISTRY }} --resource-group ${{ vars.RESOURCE_GROUP }} --file ./Dockerfile ./app/

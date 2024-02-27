@@ -1,6 +1,8 @@
 id: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/jobs/opentofu
 identity:
-  type: None
+  principalId: f8514d9f-f5ff-4e79-b2dd-27f724ed0199
+  tenantId: f18fae10-4c6c-478d-9080-f39bbac3041c
+  type: SystemAssigned
 location: West Europe
 name: opentofu
 properties:
@@ -23,7 +25,9 @@ properties:
           name: blob
           type: azure-blob
     manualTriggerConfig: null
-    registries: null
+    registries:
+    - identity: system
+      server: regcontainerapps.azurecr.io
     replicaRetryLimit: 0
     replicaTimeout: 1800
     scheduleTriggerConfig: null
@@ -32,15 +36,15 @@ properties:
     triggerType: Event
   environmentId: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/managedEnvironments/env-container-apps-environment
   eventStreamEndpoint: https://westeurope.azurecontainerapps.dev/subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/containerApps/opentofu/eventstream
+  provisioningState: Succeeded
   template:
     containers:
-    - command: []
-      env:
+    - env:
       - name: MOUNT_PATH
         value: /var/requests
       - name: AZURE_STORAGE_CONNECTION_STRING
         secretRef: connection-string-secret
-    - image: regcontainerapps.azurecr.io/opentofu:latest
+      image: regcontainerapps.azurecr.io/opentofu:latest
       name: opentofu
       volumeMounts:
       - volumeName: mounted-azure-file-volume
@@ -56,4 +60,11 @@ properties:
       storageType: AzureFile
   workloadProfileName: null
 resourceGroup: azure-container-apps
+systemData:
+  createdAt: '2024-02-27T01:43:15.3247923'
+  createdBy: admin@eladtal.com
+  createdByType: User
+  lastModifiedAt: '2024-02-27T01:43:40.6709406'
+  lastModifiedBy: admin@eladtal.com
+  lastModifiedByType: User
 type: Microsoft.App/jobs

@@ -16,7 +16,7 @@ RESOURCE_GROUP="azure-container-apps"
 LOCATION="westeurope"
 ENVIRONMENT_NAME="env-container-apps-environment"
 JOB_NAME="opentofu"
-BLOB_CONTAINER_NAME="opentofu-requests"
+BLOB_CONTAINER_NAME="requests"
 BLOB_CONNECTION_STRING="<QUEUE_CONNECTION_STRING>"
 ```
 
@@ -71,6 +71,18 @@ https://opentofu.org/docs/intro/install/standalone/
 A Debian system is organized along the Filesystem Hierarchy Standard (FHS). This standard defines the purpose of each directory.
 https://www.debian.org/doc/manuals/debian-handbook/sect.filesystem-hierarchy.en.html
 
+
+## Attaching log analytics workspace to container apps - REPLACE IMAGE
+![Log Analithics Workspace Key](/assets/log-analytics-workspace-keys.png)
+
+
+## KEDA Scalers: Azure Blob Storage
+https://keda.sh/docs/2.13/scalers/
+https://keda.sh/docs/1.4/scalers/azure-storage-blob/
+
+
+## python image:
+https://hub.docker.com/_/python/tags
 
 
 ---

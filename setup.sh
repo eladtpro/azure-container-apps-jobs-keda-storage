@@ -21,6 +21,7 @@ if [[ -z "$name" ]]; then
     --resource-group $RESOURCE_GROUP \
     --location $LOCATION \
     --logs-workspace-id $LOGS_WORKSPACE_ID \
+    --logs-workspace-key $LOGS_WORKSPACE_KEY \
     --query "properties.provisioningState"
 
   echo "Setting the storage account $STORAGE_ACCOUNT_NAME for the environment $ENVIRONMENT_NAME..."
@@ -54,7 +55,12 @@ else
       --scale-rule-metadata "blobContainerName=$BLOB_CONTAINER_NAME" "blobCount=1" \
       --scale-rule-auth "connection=connection-string-secret" \
       --secrets "connection-string-secret=$STORAGE_CONNECTION_STRING" \
-      --env-vars "MOUNT_PATH=$MOUNT_PATH" "AZURE_STORAGE_CONNECTION_STRING=secretref:connection-string-secret"
+      --env-vars \
+        "MOUNT_PATH=$MOUNT_PATH" \
+        "AZURE_STORAGE_CONNECTION_STRING=secretref:connection-string-secret" \
+        "SOURCE_CONTAINER_NAME=requests" \
+        "WORKING_CONTAINER_NAME=processing" \
+        "COMPLETED_CONTAINER_NAME=completed"
 fi
 
 # show the job yaml

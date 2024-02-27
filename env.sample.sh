@@ -1,0 +1,15 @@
+LOCATION="westeurope"
+STORAGE_ACCOUNT_NAME="<storage_account_name>"
+STORAGE_ACCOUNT_KEY="<storage_account_key>"
+STORAGE_SHARE_NAME="<storage_share_name>"
+JOB_NAME="opentofu"
+JOB_IMAGE="<registry_name>.azurecr.io/opentofu:latest"
+JOB_REGISTRY_SERVER="<registry_name>.azurecr.io"
+JOB_REGISTRY_IDENTITY="system" #"/subscriptions/<subscription_id>/resourceGroups/<resource_group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<identity_name>"
+ENVIRONMENT_NAME="env-container-apps-environment"
+LOGS_WORKSPACE_ID="<logs_workspace_id>"
+LOGS_WORKSPACE_KEY="<logs_workspace_key>"
+BLOB_CONTAINER_NAME="requests"
+STORAGE_CONNECTION_STRING="<storage_connection_string>"
+SUBSCRIPTION_ID=<subscription_id>
+MOUNT_PATH=/var/requests

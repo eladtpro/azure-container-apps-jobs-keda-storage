@@ -1,4 +1,5 @@
 import os
+from time import strftime
 from dotenv import load_dotenv
 from azure.storage.blob import BlobServiceClient, BlobClient, BlobProperties
 import subprocess
@@ -7,11 +8,12 @@ load_dotenv()
 
 connection_string = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
 mount_path = os.getenv('MOUNT_PATH')
+source_container_name = os.getenv('SOURCE_CONTAINER_NAME')
+working_container_name = os.getenv('WORKING_CONTAINER_NAME')
+completed_container_name = os.getenv('COMPLETED_CONTAINER_NAME')
+
 print(f'Mount path: {mount_path}')
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-source_container_name = 'opentofu-requests'
-working_container_name = 'processing'
-completed_container_name = 'completed'
 source_container_client = blob_service_client.get_container_client(source_container_name)
 working_container_client = blob_service_client.get_container_client(working_container_name)
 
@@ -36,17 +38,19 @@ def move_blob_to_container(
 
 def process_blob(destination_blob: BlobClient):
     print(f'Processing blob {destination_blob.blob_name}...')
-    # Download the blob
-    download_file_path = f'{mount_path}{destination_blob.blob_name}'
-    with open(download_file_path, 'wb') as download_file:
-        download_file.write(destination_blob.download_blob().readall())
-    print(f'Blob {destination_blob.blob_name} downloaded to {download_file_path}')
 
-    # Process the blob
-    subprocess.run(['chmod', '+x', './terraform'], cwd=mount_path)
-    subprocess.run(['file', './terraform', 'version'], cwd=mount_path)
-    subprocess.run(['file', './terraform', 'init', mount_path], cwd=mount_path)
-    subprocess.run(['file', './terraform', 'plan', mount_path], cwd=mount_path)
+    date_dir = strftime("%Y%m%d")
+    time_dir = strftime("%H%M%S")
+    cwd_dir = os.path.join(mount_path, 'runs', date_dir, time_dir)
+    template_dir = os.path.join(mount_path, 'templates')
+    os.makedirs(cwd_dir, exist_ok=True)
+
+    with open(os.path.join(cwd_dir, destination_blob.blob_name), 'wb') as download_file:
+        download_file.write(destination_blob.download_blob().readall())
+    print(f'Blob {destination_blob.blob_name} downloaded to {cwd_dir}')
+
+    subprocess.run(['chmod', 'u+x', 'runner.sh'])
+    subprocess.run(['./runner.sh', cwd_dir, destination_blob.blob_name, template_dir])
 
     print(f'Blob {destination_blob.blob_name} processed')
 

@@ -18,7 +18,7 @@ properties:
           - secretRef: connection-string-secret
             triggerParameter: connection
           metadata:
-            blobContainerName: opentofu-requests
+            blobContainerName: requests
             blobCount: '1'
           name: blob
           type: azure-blob
@@ -38,6 +38,12 @@ properties:
       env:
       - name: MOUNT_PATH
         value: /var/requests
+      - name: SOURCE_CONTAINER_NAME
+        value: requests
+      - name: WORKING_CONTAINER_NAME
+        value: processing
+      - name: COMPLETED_CONTAINER_NAME
+        value: completed
       - name: AZURE_STORAGE_CONNECTION_STRING
         secretRef: connection-string-secret
     - image: regcontainerapps.azurecr.io/opentofu:latest

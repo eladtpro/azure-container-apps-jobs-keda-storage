@@ -13,6 +13,24 @@ else
     --query "properties.provisioningState"
 fi
 
+
+if true; then
+  echo "Creating $AZURE_STORAGE_ACCOUNT"
+  az storage account create --name $STORAGE_ACCOUNT_NAME --location "$location" --resource-group $RESOURCE_GROUP --sku $STORAGE_ACCOUNT_SKU
+
+  # Set the storage account key as an environment variable. 
+  AZURE_STORAGE_KEY=$(az storage account keys list -g $RESOURCE_GROUP -n $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+
+  echo "Creating $share"
+  az storage share create --name $STORAGE_SHARE_NAME --account-name $STORAGE_ACCOUNT_NAME
+
+  # Create a directory in the share.
+  echo "Creating $directory in $share"
+  az storage directory create --share-name $STORAGE_SHARE_NAME --name $STORAGE_SHARE_DIRECTORY_NAME
+else
+  echo "Storage account $STORAGE_ACCOUNT_NAME already exists."
+fi
+
 echo "Checking if the container app env $ENVIRONMENT_NAME exists..."
 name="$(az containerapp env show --name $ENVIRONMENT_NAME --resource-group $RESOURCE_GROUP --query name)"
 if [[ -z "$name" ]]; then

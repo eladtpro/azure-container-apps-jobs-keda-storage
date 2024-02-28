@@ -1,4 +1,4 @@
-id: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/jobs/opentofu
+id: /subscriptions/<subscription_id>/resourceGroups/azure-container-apps/providers/Microsoft.App/jobs/opentofu
 identity:
   type: None
 location: West Europe
@@ -30,8 +30,8 @@ properties:
     secrets:
     - name: connection-string-secret
     triggerType: Event
-  environmentId: /subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/providers/Microsoft.App/managedEnvironments/env-container-apps-environment
-  eventStreamEndpoint: https://westeurope.azurecontainerapps.dev/subscriptions/977171a9-6bfd-49c4-a496-018d3312466e/resourceGroups/azure-container-apps/containerApps/opentofu/eventstream
+  environmentId: /subscriptions/<subscription_id>/resourceGroups/azure-container-apps/providers/Microsoft.App/managedEnvironments/env-container-apps-environment
+  eventStreamEndpoint: https://westeurope.azurecontainerapps.dev/subscriptions/<subscription_id>/resourceGroups/azure-container-apps/containerApps/opentofu/eventstream
   template:
     containers:
     - command: []

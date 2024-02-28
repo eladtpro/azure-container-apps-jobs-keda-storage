@@ -61,6 +61,10 @@ else
         "SOURCE_CONTAINER_NAME=requests" \
         "WORKING_CONTAINER_NAME=processing" \
         "COMPLETED_CONTAINER_NAME=completed"
+        "ARM_USE_MSI=$ARM_USE_MSI"
+        "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID"
+        "ARM_TENANT_ID=$ARM_TENANT_ID"
+        "ARM_CLIENT_ID=$ARM_CLIENT_ID"
 fi
 
 # show the job yaml
@@ -68,14 +72,6 @@ az containerapp job show \
   --name $JOB_NAME \
   --resource-group $RESOURCE_GROUP \
   --output yaml > job.yaml
-
-# # update the job mounted volumes
-# # https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts-azure-files?tabs=bash#create-the-storage-mount
-# az containerapp job update \
-#   --name $JOB_NAME \
-#   --resource-group $RESOURCE_GROUP \
-#   --yaml job.yaml \
-#   --output table
 
 # az ad sp create-for-rbac 
 #   --name $JOB_NAME --role contributor \

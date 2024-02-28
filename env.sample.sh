@@ -13,3 +13,9 @@ BLOB_CONTAINER_NAME="requests"
 STORAGE_CONNECTION_STRING="<storage_connection_string>"
 SUBSCRIPTION_ID=<subscription_id>
 MOUNT_PATH=/var/requests
+# opentofu manged identity
+export ARM_USE_MSI=true
+export ARM_SUBSCRIPTION_ID=159f2485-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+export ARM_TENANT_ID=72f988bf-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+export ARM_CLIENT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx # only necessary for user assigned identity
+export ARM_MSI_ENDPOINT=$MSI_ENDPOINT # only necessary when the msi endpoint is different than the well-known one

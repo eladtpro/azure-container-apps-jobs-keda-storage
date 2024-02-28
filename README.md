@@ -45,6 +45,9 @@ The job will run with 0.25 CPU and 0.5Gi memory. The job will run a maximum of 1
 > Use KEDA [Azure Blob Storage](https://keda.sh/docs/1.4/scalers/azure-storage-blob/) scaler to scale the job based on the number of blobs in the specified container. The job will scale up when the number of blobs in the container increases and scale down when the number of blobs decreases.
 > Use [debian:latest](https://hub.docker.com/_/debian) as the image for the job. 
 
+
+## run setup.sh
+
 ```
 az containerapp job create \
     --name $JOB_NAME --resource-group $RESOURCE_GROUP --environment $ENVIRONMENT_NAME \
@@ -83,6 +86,12 @@ https://keda.sh/docs/1.4/scalers/azure-storage-blob/
 
 ## python image:
 https://hub.docker.com/_/python/tags
+
+
+## setting opentofu provider manged identity login
+Before you can create a resource with a managed identity and then assign an RBAC role, your account needs sufficient permissions. You need to be a member of the account Owner role, or have Contributor plus User Access Administrator roles.
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/managed_service_identity
+
 
 
 ---

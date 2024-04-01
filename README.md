@@ -7,7 +7,28 @@ Container apps and jobs run in the same [environment](https://learn.microsoft.co
 
 ![Diagram](/assets/container-app-job-diagram.png)
 
+## Creating resources
+Log analytics + container registry -> manual
 
+
+az acr login with --expose-token
+https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli#az-acr-login-with---expose-token
+
+
+## create Application - App Registration
+
+```
+# create an entity on the resource group level
+az ad sp create-for-rbac --name aks-scaler --role contributor --scopes /subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP} --json-auth
+```
+
+## create log analytics workspace
+
+
+
+## Github action
+push image 
+az acr build --image opentofu:latest --registry ${{ vars.CONTAINER_REGISTRY }} --resource-group ${{ vars.RESOURCE_GROUP }} --file ./Dockerfile ./app/
 
 
 ### Variables

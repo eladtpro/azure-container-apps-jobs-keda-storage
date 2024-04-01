@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Source the environment variables
-source ./env.sh
+source ../shared/.env.sh
+source .env.sh
 
 echo "Checking if the resource group $RESOURCE_GROUP exists..."
 if az group exists --name $RESOURCE_GROUP; then
@@ -19,8 +20,8 @@ if true; then
   az storage account create --name $STORAGE_ACCOUNT_NAME --location "$location" --resource-group $RESOURCE_GROUP --sku $STORAGE_ACCOUNT_SKU
 
   # Set the storage account key as an environment variable. 
-  AZURE_STORAGE_KEY=$(az storage account keys list -g $RESOURCE_GROUP -n $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
-
+  STORAGE_ACCOUNT_KEY=$(az storage account keys list -g $RESOURCE_GROUP -n $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+  STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --query connectionString)
   echo "Creating $share"
   az storage share create --name $STORAGE_SHARE_NAME --account-name $STORAGE_ACCOUNT_NAME
 
@@ -29,6 +30,8 @@ if true; then
   az storage directory create --share-name $STORAGE_SHARE_NAME --name $STORAGE_SHARE_DIRECTORY_NAME
 else
   echo "Storage account $STORAGE_ACCOUNT_NAME already exists."
+  STORAGE_ACCOUNT_KEY=$(az storage account keys list -g $RESOURCE_GROUP -n $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+  STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --query connectionString)
 fi
 
 echo "Checking if the container app env $ENVIRONMENT_NAME exists..."
@@ -95,3 +98,9 @@ az containerapp job show \
 #   --name $JOB_NAME --role contributor \
 #   --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP \
 #   --json-auth
+
+# az containerapp job update \
+#   --name $JOB_NAME \
+#   --resource-group $RESOURCE_GROUP \
+#   --yaml job.yaml \
+#   --output table

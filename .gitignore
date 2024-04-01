@@ -1,5 +1,5 @@
 **/.DS_Store
 **/.env
-**/env.sh
+**/.env.sh
 **/job.yaml
 /requests/runs/*

@@ -20,7 +20,8 @@ az containerapp job create \
     --scale-rule-auth "connection=connection-string-secret" \
     --secrets "connection-string-secret=$SERVICE_BUS_CONNECTION_STRING" \
     --env-vars \
-      "AZURE_SERVICE_BUS_CONNECTION_STRING=secretref:connection-string-secret"
+      "AZURE_SERVICE_BUS_CONNECTION_STRING=secretref:connection-string-secret" \
+      "SERVICE_BUS_QUEUE_NAME=$SERVICE_BUS_QUEUE_NAME"
 
 
 # show the job yaml

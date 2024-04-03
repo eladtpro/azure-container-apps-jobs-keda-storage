@@ -9,8 +9,8 @@ ServiceBusClient client;
 // the processor that reads and processes messages from the queue
 ServiceBusProcessor processor;
 
-string connectionString = Environment.GetEnvironmentVariable("NAMESPACE_CONNECTION_STRING");
-string queueName = Environment.GetEnvironmentVariable("QUEUE_NAME");
+string connectionString = Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
+string queueName = Environment.GetEnvironmentVariable("SERVICE_BUS_QUEUE_NAME");
 
 
 // The Service Bus client types are safe to cache and use as a singleton for the lifetime

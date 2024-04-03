@@ -15,5 +15,7 @@ jobs:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
         - name: copy shared files
           run: cp -r ./shared ./python-blob/app/
+        - name: list app files
+          run: ls -la ./python-blob/app/
         - name: Build and push opentofu-python-blob image to ACR (${{ vars.CONTAINER_REGISTRY }})
           run: az acr build --image opentofu-python-blob:latest --registry ${{ vars.CONTAINER_REGISTRY }} --resource-group ${{ vars.RESOURCE_GROUP }} --file ./python-blob/Dockerfile ./python-blob/app/

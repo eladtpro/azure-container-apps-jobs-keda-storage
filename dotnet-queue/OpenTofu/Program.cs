@@ -11,6 +11,7 @@ ServiceBusProcessor processor;
 
 string connectionString = Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
 string queueName = Environment.GetEnvironmentVariable("SERVICE_BUS_QUEUE_NAME");
+string mountPath = Environment.GetEnvironmentVariable("MOUNT_PATH");
 
 
 // The Service Bus client types are safe to cache and use as a singleton for the lifetime
@@ -61,16 +62,32 @@ finally
 // handle received messages
 async Task MessageHandler(ProcessMessageEventArgs args)
 {
-    // subprocess.run(['chmod', 'u+x', 'runner.sh'])
-    // subprocess.run(['./runner.sh', cwd_dir, destination_blob.blob_name, template_dir])
-
-
     string body = args.Message.Body.ToString();
-    Console.WriteLine($"Received: {body}");
-    ProcessStartInfo startInfo = new ProcessStartInfo();
-    startInfo.FileName = "/bin/bash";
-    startInfo.Arguments = $"./runner.sh cwd_dir destination_blob.blob_name ${template_dir}",
-    RedirectStandardOutput = true
+    string fileName = "terraform.tfvars";//args.Message.MessageId;
+    Console.WriteLine($"Received: {args.Message.Body.ToString()}");
+
+    string dateDir = DateTime.Now.ToString("yyyyMMdd");
+    string timeDir = DateTime.Now.ToString("HHmmss");
+    string cwdDir = Path.Combine(mountPath, "runs", dateDir, timeDir);
+    string templateDir = Path.Combine(mountPath, "templates");
+    Directory.CreateDirectory(cwdDir);
+
+    using (FileStream downloadFile = File.Create(Path.Combine(cwdDir, fileName)))
+    {
+        byte[] data = args.Message.Body.ToArray();
+        downloadFile.Write(data, 0, data.Length);
+    }
+    Console.WriteLine($"Blob {fileName} downloaded to {cwdDir}");
+
+    Process.Start("chmod", "u+x runner.sh");
+    Process.Start("./runner.sh", $"{cwdDir} {fileName} {templateDir}");
+
+    Console.WriteLine($"Blob {fileName} processed");
+
+    // ProcessStartInfo startInfo = new ProcessStartInfo();
+    // startInfo.FileName = "/bin/bash";
+    // startInfo.Arguments = $"./runner.sh cwd_dir destination_blob.blob_name ${template_dir}",
+    // RedirectStandardOutput = true
 
     // complete the message. message is deleted from the queue. 
     await args.CompleteMessageAsync(args.Message);

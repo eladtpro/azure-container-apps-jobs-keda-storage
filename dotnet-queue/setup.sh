@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source ../shared/.env.shared.sh
-source ../shared/setup.shared.sh
+source ../shared/.env.sh
+source ../shared/setup.sh
 
 source .env.sh
 

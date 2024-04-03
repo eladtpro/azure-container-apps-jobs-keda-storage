@@ -2,20 +2,15 @@
 
 # Source the environment variables
 source ../shared/.env.sh
+source ../shared/setup.sh
+
 source .env.sh
 
-echo "Checking if the resource group $RESOURCE_GROUP exists..."
-if az group exists --name $RESOURCE_GROUP; then
-    echo "Resource group $RESOURCE_GROUP already exists."
+if az storage account show --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP > /dev/null 2>&1; then
+  echo "Storage account $STORAGE_ACCOUNT_NAME already exists."
+  STORAGE_ACCOUNT_KEY=$(az storage account keys list -g $RESOURCE_GROUP -n $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+  STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --query connectionString)
 else
-  az group create \
-    --name $RESOURCE_GROUP \
-    --location $LOCATION \
-    --query "properties.provisioningState"
-fi
-
-
-if true; then
   echo "Creating $AZURE_STORAGE_ACCOUNT"
   az storage account create --name $STORAGE_ACCOUNT_NAME --location "$location" --resource-group $RESOURCE_GROUP --sku $STORAGE_ACCOUNT_SKU
 
@@ -28,10 +23,6 @@ if true; then
   # Create a directory in the share.
   echo "Creating $directory in $share"
   az storage directory create --share-name $STORAGE_SHARE_NAME --name $STORAGE_SHARE_DIRECTORY_NAME
-else
-  echo "Storage account $STORAGE_ACCOUNT_NAME already exists."
-  STORAGE_ACCOUNT_KEY=$(az storage account keys list -g $RESOURCE_GROUP -n $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
-  STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --query connectionString)
 fi
 
 echo "Checking if the container app env $ENVIRONMENT_NAME exists..."
@@ -81,10 +72,10 @@ else
         "AZURE_STORAGE_CONNECTION_STRING=secretref:connection-string-secret" \
         "SOURCE_CONTAINER_NAME=requests" \
         "WORKING_CONTAINER_NAME=processing" \
-        "COMPLETED_CONTAINER_NAME=completed"
-        "ARM_USE_MSI=$ARM_USE_MSI"
-        "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID"
-        "ARM_TENANT_ID=$ARM_TENANT_ID"
+        "COMPLETED_CONTAINER_NAME=completed" \
+        "ARM_USE_MSI=$ARM_USE_MSI" \
+        "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID" \
+        "ARM_TENANT_ID=$ARM_TENANT_ID" \
         "ARM_CLIENT_ID=$ARM_CLIENT_ID"
 fi
 

@@ -33,9 +33,9 @@ az acr build --image opentofu:latest --registry ${{ vars.CONTAINER_REGISTRY }} -
 
 ### Variables
 ```
-RESOURCE_GROUP="azure-container-apps"
-LOCATION="westeurope"
-ENVIRONMENT_NAME="env-container-apps-environment"
+RESOURCE_GROUP="azure-container-app-jobs"
+LOCATION="eastus"
+ENVIRONMENT_NAME="env-container-jobs"
 JOB_NAME="opentofu"
 BLOB_CONTAINER_NAME="requests"
 BLOB_CONNECTION_STRING="<QUEUE_CONNECTION_STRING>"

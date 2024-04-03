@@ -3,7 +3,6 @@ FROM python:latest
 WORKDIR /app
 
 COPY . .
-COPY /shared/ .
 
 ENV DEBIAN_FRONTEND=noninteractive
 

@@ -14,6 +14,8 @@ jobs:
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
         - name: copy shared files
-          run: cp -r ./shared ./dotnet-queue/OpenTofu/
+          run: cp -r ./shared/* ./dotnet-queue/OpenTofu/
+        - name: list app files
+          run: ls -la ./dotnet-queue/OpenTofu/
         - name: Build and push opentofu-dotnet-queue image to ACR (${{ vars.CONTAINER_REGISTRY }})
           run: az acr build --image opentofu-dotnet-queue:latest --registry ${{ vars.CONTAINER_REGISTRY }} --resource-group ${{ vars.RESOURCE_GROUP }} --file ./dotnet-queue/OpenTofu/Dockerfile ./dotnet-queue/OpenTofu/

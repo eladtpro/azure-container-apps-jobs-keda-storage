@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Source the environment variables
 source ../shared/.env.sh
 source ../shared/setup.sh
 
@@ -25,17 +24,9 @@ else
   az storage directory create --share-name $STORAGE_SHARE_NAME --name $STORAGE_SHARE_DIRECTORY_NAME
 fi
 
-echo "Checking if the container app env $ENVIRONMENT_NAME exists..."
-name="$(az containerapp env show --name $ENVIRONMENT_NAME --resource-group $RESOURCE_GROUP --query name)"
+echo "Checking if the storage account $STORAGE_ACCOUNT_NAME is set..."
+name="$(az containerapp env storage show --name $ENVIRONMENT_NAME --resource-group $RESOURCE_GROUP --storage-name $STORAGE_SHARE_NAME --query name)"
 if [[ -z "$name" ]]; then
-  az containerapp env create \
-    --name $ENVIRONMENT_NAME \
-    --resource-group $RESOURCE_GROUP \
-    --location $LOCATION \
-    --logs-workspace-id $LOGS_WORKSPACE_ID \
-    --logs-workspace-key $LOGS_WORKSPACE_KEY \
-    --query "properties.provisioningState"
-
   echo "Setting the storage account $STORAGE_ACCOUNT_NAME for the environment $ENVIRONMENT_NAME..."
   az containerapp env storage set --name $ENVIRONMENT_NAME --resource-group $RESOURCE_GROUP \
     --storage-name $STORAGE_SHARE_NAME \
@@ -44,7 +35,7 @@ if [[ -z "$name" ]]; then
     --azure-file-share-name $STORAGE_SHARE_NAME \
     --access-mode ReadWrite
 else
-    echo "Environment $name already exists."
+    echo "storage account $STORAGE_ACCOUNT_NAME already set."
 fi
 
 echo "Checking if the container app job $JOB_NAME exists..."
@@ -84,11 +75,6 @@ az containerapp job show \
   --name $JOB_NAME \
   --resource-group $RESOURCE_GROUP \
   --output yaml > job.yaml
-
-# az ad sp create-for-rbac 
-#   --name $JOB_NAME --role contributor \
-#   --scopes /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP \
-#   --json-auth
 
 # az containerapp job update \
 #   --name $JOB_NAME \

@@ -1,5 +1,7 @@
 #!/bin/bash
+
 source ../shared/.env.sh
+source ../shared/setup.sh
 
 source .env.sh
 

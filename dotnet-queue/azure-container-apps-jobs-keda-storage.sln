@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet-queue", "dotnet-queue", "{2DE8A2F9-4FAF-4E3E-B3C0-00661D47CE81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTofu", "OpenTofu.csproj", "{15715340-91A9-4B20-9D6C-39B119D62F59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTofu", "OpenTofu/OpenTofu.csproj", "{15715340-91A9-4B20-9D6C-39B119D62F59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

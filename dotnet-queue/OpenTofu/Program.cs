@@ -10,7 +10,7 @@ ServiceBusClient client;
 ServiceBusProcessor processor;
 
 string connectionString = Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
-string queueName = Environment.GetEnvironmentVariable("SERVICE_BUS_QUEUE_NAME");
+string queueName = Environment.GetEnvironmentVariable("SERVICE_BUS_REQUESTS_QUEUE_NAME");
 string mountPath = Environment.GetEnvironmentVariable("MOUNT_PATH");
 
 

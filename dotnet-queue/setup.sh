@@ -8,35 +8,35 @@ source .env.sh
 echo "Checking if the container app job $JOB_NAME exists..."
 names=$(az containerapp job list --resource-group=$RESOURCE_GROUP --query "[].name" -o tsv)
 if [[ $names == *"$JOB_NAME"* ]]; then
-    echo "Job $JOB_NAME already exists in $names."
-else
-  az containerapp job create \
-      --name $JOB_NAME --resource-group $RESOURCE_GROUP --environment $ENVIRONMENT_NAME \
-      --trigger-type "Event" \
-      --replica-timeout 1800 --replica-retry-limit 0 --replica-completion-count 1 --parallelism 1 \
-      --image $JOB_IMAGE \
-      --registry-server $JOB_REGISTRY_SERVER \
-      --registry-identity $JOB_REGISTRY_IDENTITY \
-      --cpu "0.25" --memory "0.5Gi" \
-      --min-executions 0 \
-      --max-executions 1 \
-      --scale-rule-name "queue" \
-      --scale-rule-type "azure-servicebus" \
-      --scale-rule-metadata "namespace=$SERVICE_BUS_NAMESPACE" "queueName=$SERVICE_BUS_QUEUE_NAME" "queueLength=1" \
-      --scale-rule-auth "connection=connection-string-secret" \
-      --secrets "connection-string-secret=$SERVICE_BUS_CONNECTION_STRING" \
-      --env-vars \
-        "MOUNT_PATH=$MOUNT_PATH" \
-        "AZURE_SERVICE_BUS_CONNECTION_STRING=secretref:connection-string-secret" \
-        "SERVICE_BUS_QUEUE_NAME=$SERVICE_BUS_QUEUE_NAME"
+    echo "DELETING.. Job $JOB_NAME already exists in $names."
+    az containerapp job delete --name $JOB_NAME --resource-group $RESOURCE_GROUP --yes
 fi
+
+az containerapp job create \
+    --name $JOB_NAME --resource-group $RESOURCE_GROUP --environment $ENVIRONMENT_NAME \
+    --trigger-type "Event" \
+    --replica-timeout 1800 --replica-retry-limit 0 --replica-completion-count 1 --parallelism 1 \
+    --image $JOB_IMAGE \
+    --registry-server $JOB_REGISTRY_SERVER \
+    --registry-identity $JOB_REGISTRY_IDENTITY \
+    --cpu "0.25" --memory "0.5Gi" \
+    --min-executions 0 \
+    --max-executions 1 \
+    --scale-rule-name "queue" \
+    --scale-rule-type "azure-servicebus" \
+    --scale-rule-metadata "namespace=$SERVICE_BUS_NAMESPACE" "queueName=$SERVICE_BUS_REQUESTS_QUEUE_NAME" "queueLength=1" \
+    --scale-rule-auth "connection=connection-string-secret" \
+    --secrets "connection-string-secret=$SERVICE_BUS_CONNECTION_STRING" \
+    --env-vars \
+      "MOUNT_PATH=$MOUNT_PATH" \
+      "AZURE_SERVICE_BUS_CONNECTION_STRING=secretref:connection-string-secret" \
+      "SERVICE_BUS_REQUESTS_QUEUE_NAME=$SERVICE_BUS_REQUESTS_QUEUE_NAME"
 
 # show the job yaml
 az containerapp job show \
   --name $JOB_NAME \
   --resource-group $RESOURCE_GROUP \
   --output yaml > job.yaml
-
 
 # # update the job mounted volumes
 # az containerapp job update \

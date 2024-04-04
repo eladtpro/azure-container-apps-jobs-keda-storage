@@ -12,6 +12,8 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/runtime:8.0
 WORKDIR /App
 COPY --from=build-env /App/out .
+COPY --from=build-env /App/installer.sh .
+COPY --from=build-env /App/runner.sh .
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN chmod +x installer.sh

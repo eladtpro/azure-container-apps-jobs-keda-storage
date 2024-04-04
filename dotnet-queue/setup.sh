@@ -30,7 +30,8 @@ az containerapp job create \
     --env-vars \
       "MOUNT_PATH=$MOUNT_PATH" \
       "AZURE_SERVICE_BUS_CONNECTION_STRING=secretref:connection-string-secret" \
-      "SERVICE_BUS_REQUESTS_QUEUE_NAME=$SERVICE_BUS_REQUESTS_QUEUE_NAME"
+      "SERVICE_BUS_REQUESTS_QUEUE_NAME=$SERVICE_BUS_REQUESTS_QUEUE_NAME" \
+      "PROCESS_WAIT_MS=$PROCESS_WAIT_MS"
 
 # show the job yaml
 az containerapp job show \

@@ -1,7 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 // the client that owns the connection and can be used to create senders and receivers
 ServiceBusClient client;
@@ -9,9 +7,10 @@ ServiceBusClient client;
 // the processor that reads and processes messages from the queue
 ServiceBusProcessor processor;
 
-string connectionString = Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
-string queueName = Environment.GetEnvironmentVariable("SERVICE_BUS_REQUESTS_QUEUE_NAME");
-string mountPath = Environment.GetEnvironmentVariable("MOUNT_PATH");
+string AZURE_SERVICE_BUS_CONNECTION_STRING = Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
+string SERVICE_BUS_REQUESTS_QUEUE_NAME = Environment.GetEnvironmentVariable("SERVICE_BUS_REQUESTS_QUEUE_NAME");
+string MOUNT_PATH = Environment.GetEnvironmentVariable("MOUNT_PATH");
+int PROCESS_WAIT_MS = int.Parse(Environment.GetEnvironmentVariable("PROCESS_WAIT_MS"));
 
 
 // The Service Bus client types are safe to cache and use as a singleton for the lifetime
@@ -26,11 +25,11 @@ var clientOptions = new ServiceBusClientOptions()
 {
     TransportType = ServiceBusTransportType.AmqpWebSockets
 };
-client = new ServiceBusClient(connectionString, clientOptions);
+client = new ServiceBusClient(AZURE_SERVICE_BUS_CONNECTION_STRING, clientOptions);
 
 // create a processor that we can use to process the messages
 // TODO: Replace the <QUEUE-NAME> placeholder
-processor = client.CreateProcessor(queueName, new ServiceBusProcessorOptions());
+processor = client.CreateProcessor(SERVICE_BUS_REQUESTS_QUEUE_NAME, new ServiceBusProcessorOptions());
 
 try
 {
@@ -44,7 +43,8 @@ try
     await processor.StartProcessingAsync();
 
     Console.WriteLine("Wait for a minute and then press any key to end the processing");
-    Console.ReadKey();
+    Thread.Sleep(PROCESS_WAIT_MS);
+    // Console.ReadKey();
 
     // stop processing 
     Console.WriteLine("\nStopping the receiver...");
@@ -64,12 +64,12 @@ async Task MessageHandler(ProcessMessageEventArgs args)
 {
     string body = args.Message.Body.ToString();
     string fileName = "terraform.tfvars";//args.Message.MessageId;
-    Console.WriteLine($"Received: {args.Message.Body.ToString()}");
+    Console.WriteLine($"Received: {args.Message.Body}");
 
     string dateDir = DateTime.Now.ToString("yyyyMMdd");
     string timeDir = DateTime.Now.ToString("HHmmss");
-    string cwdDir = Path.Combine(mountPath, "runs", dateDir, timeDir);
-    string templateDir = Path.Combine(mountPath, "templates");
+    string cwdDir = Path.Combine(MOUNT_PATH, "runs", dateDir, timeDir);
+    string templateDir = Path.Combine(MOUNT_PATH, "templates");
     Directory.CreateDirectory(cwdDir);
 
     using (FileStream downloadFile = File.Create(Path.Combine(cwdDir, fileName)))

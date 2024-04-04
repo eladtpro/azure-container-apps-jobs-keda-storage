@@ -69,6 +69,9 @@ The job will run with 0.25 CPU and 0.5Gi memory. The job will run a maximum of 1
 
 ## run setup.sh
 
+## REGISTRY USERNAME & PASSWORD
+
+
 ```
 az containerapp job create \
     --name $JOB_NAME --resource-group $RESOURCE_GROUP --environment $ENVIRONMENT_NAME \

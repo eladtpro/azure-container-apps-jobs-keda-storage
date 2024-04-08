@@ -19,8 +19,6 @@ int PROCESS_WAIT_MS = int.Parse(Environment.GetEnvironmentVariable("PROCESS_WAIT
 //
 // Set the transport type to AmqpWebSockets so that the ServiceBusClient uses port 443. 
 // If you use the default AmqpTcp, make sure that ports 5671 and 5672 are open.
-
-// TODO: Replace the <NAMESPACE-CONNECTION-STRING> and <QUEUE-NAME> placeholders
 var clientOptions = new ServiceBusClientOptions()
 {
     TransportType = ServiceBusTransportType.AmqpWebSockets
@@ -42,7 +40,7 @@ try
     // start processing 
     await processor.StartProcessingAsync();
 
-    Console.WriteLine("Wait for a minute and then press any key to end the processing");
+    Console.WriteLine($"Waiting for {PROCESS_WAIT_MS/1000} secondes for item in queue for processing");
     Thread.Sleep(PROCESS_WAIT_MS);
     // Console.ReadKey();
 

@@ -117,6 +117,13 @@ Before you can create a resource with a managed identity and then assign an RBAC
 https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/managed_service_identity
 
 
+## Use dive to test docker image
+
+[Dive - github](https://github.com/wagoodman/dive)
+
+[Dive](https://github.com/wagoodman/dive/raw/main/.data/demo.gif)
+
+
 
 ---
 

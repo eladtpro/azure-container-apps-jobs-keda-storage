@@ -19,3 +19,12 @@ jobs:
           run: ls -la ./dotnet-queue/OpenTofu/
         - name: Build and push opentofu-dotnet-queue image to ACR (${{ vars.CONTAINER_REGISTRY }})
           run: az acr build --image opentofu-dotnet-queue:latest --registry ${{ vars.CONTAINER_REGISTRY }} --resource-group ${{ vars.RESOURCE_GROUP }} --file ./dotnet-queue/OpenTofu/Dockerfile ./dotnet-queue/OpenTofu/
+        - name: retag image with sha
+          run: az acr import --name ${{ vars.CONTAINER_REGISTRY }} --source ${{ vars.CONTAINER_REGISTRY }}.azurecr.io/opentofu-dotnet-queue:latest --image opentofu-dotnet-queue:${{ github.sha }} --force
+        - name: Build and deploy Container App
+          uses: azure/container-apps-deploy-action@v1
+          with:
+            acrName: ${{ vars.CONTAINER_REGISTRY }}
+            containerAppName: opentofu-dotnet-queue
+            resourceGroup: ${{ vars.RESOURCE_GROUP }}
+            imageToDeploy: ${{ vars.CONTAINER_REGISTRY }}.azurecr.io/opentofu-dotnet-queue:latest        

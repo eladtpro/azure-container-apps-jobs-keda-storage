@@ -19,7 +19,7 @@ https://learn.microsoft.com/en-us/azure/container-registry/container-registry-au
 
 ```
 # create an entity on the resource group level
-az ad sp create-for-rbac --name aks-scaler --role contributor --scopes /subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP} --json-auth
+az ad sp create-for-rbac --name containerapps-jobs-github --role Contributor --scopes /subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP} --json-auth
 ```
 
 ## create log analytics workspace

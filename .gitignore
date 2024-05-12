@@ -3,3 +3,5 @@
 **/.env.sh
 **/job.yaml
 /requests/runs/*
+.tofu
+requests/templates/providers.tf

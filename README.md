@@ -16,6 +16,10 @@ https://learn.microsoft.com/en-us/azure/container-registry/container-registry-au
 
 
 ## create Application - App Registration
+> Note: The following command creates an app registration with the name containerapps-jobs-github. The command also assigns the Contributor role to the app registration on the specified resource group. Replace the value of the --scopes parameter with the resource group where you want to create the entity.
+> the permissions are scoped to the resource group level. The app registration has the Contributor role on the specified resource group. The command also creates a service principal and assigns the Contributor role to the service principal on the specified resource group.
+> Push image to Azure Container Registry, Deploy Container App Job to Azure Container Apps.
+
 
 ```
 # create an entity on the resource group level

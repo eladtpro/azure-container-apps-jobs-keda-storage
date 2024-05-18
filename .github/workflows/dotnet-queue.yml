@@ -22,9 +22,16 @@ jobs:
         - name: retag image with sha
           run: az acr import --name ${{ vars.CONTAINER_REGISTRY }} --source ${{ vars.CONTAINER_REGISTRY }}.azurecr.io/opentofu-dotnet-queue:latest --image opentofu-dotnet-queue:${{ github.sha }} --force
         - name: Build and deploy Container App
-          uses: azure/container-apps-deploy-action@v1
-          with:
-            acrName: ${{ vars.CONTAINER_REGISTRY }}
-            containerAppName: opentofu-dotnet-queue
-            resourceGroup: ${{ vars.RESOURCE_GROUP }}
-            imageToDeploy: ${{ vars.CONTAINER_REGISTRY }}.azurecr.io/opentofu-dotnet-queue:latest        
+          run: |
+            az containerapp job update \
+              --resource-group azure-container-app-jobs \
+              --name opentofu-dotnet-queue \
+              --image acrjobs.azurecr.io/opentofu-dotnet-queue:latest
+
+          ## works only on continaer apps, not container jobs
+          # uses: azure/container-apps-deploy-action@v1
+          # with:
+          #   acrName: ${{ vars.CONTAINER_REGISTRY }}
+          #   containerAppName: opentofu-dotnet-queue
+          #   resourceGroup: ${{ vars.RESOURCE_GROUP }}
+          #   imageToDeploy: ${{ vars.CONTAINER_REGISTRY }}.azurecr.io/opentofu-dotnet-queue:latest        

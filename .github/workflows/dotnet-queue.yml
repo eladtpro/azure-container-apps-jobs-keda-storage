@@ -24,9 +24,9 @@ jobs:
         - name: Build and deploy Container App
           run: |
             az containerapp job update \
-              --resource-group azure-container-app-jobs \
+              --resource-group ${{ vars.RESOURCE_GROUP }} \
               --name opentofu-dotnet-queue \
-              --image acrjobs.azurecr.io/opentofu-dotnet-queue:latest
+              --image ${{ vars.CONTAINER_REGISTRY }}.azurecr.io/opentofu-dotnet-queue:latest
 
           ## works only on continaer apps, not container jobs
           # uses: azure/container-apps-deploy-action@v1

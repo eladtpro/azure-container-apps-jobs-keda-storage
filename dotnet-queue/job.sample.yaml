@@ -1,0 +1,76 @@
+id: /subscriptions/<subscription_id>/resourceGroups/azure-container-app-jobs/providers/Microsoft.App/jobs/opentofu-dotnet-queue
+identity:
+  type: None
+location: East US
+name: opentofu-dotnet-queue
+properties:
+  configuration:
+    dapr: null
+    eventTriggerConfig:
+      parallelism: 1
+      replicaCompletionCount: 1
+      scale:
+        maxExecutions: 1
+        minExecutions: 0
+        pollingInterval: 30
+        rules:
+        - auth:
+          - secretRef: connection-string-secret
+            triggerParameter: connection
+          metadata:
+            namespace: ns-opentofu
+            queueLength: '1'
+            queueName: requests
+          name: queue
+          type: azure-servicebus
+    manualTriggerConfig: null
+    registries:
+    - identity: ''
+      passwordSecretRef: acrjobsazurecrio-acrjobs
+      server: acrjobs.azurecr.io
+      username: acrjobs
+    replicaRetryLimit: 0
+    replicaTimeout: 1800
+    scheduleTriggerConfig: null
+    secrets:
+    - name: connection-string-secret
+    - name: acrjobsazurecrio-acrjobs
+    triggerType: Event
+  environmentId: /subscriptions/<subscription_id>/resourceGroups/azure-container-app-jobs/providers/Microsoft.App/managedEnvironments/env-container-jobs
+  eventStreamEndpoint: https://eastus.azurecontainerapps.dev/subscriptions/<subscription_id>/resourceGroups/azure-container-app-jobs/containerApps/opentofu-dotnet-queue/eventstream
+  provisioningState: Succeeded
+  template:
+    containers:
+    - env:
+      - name: MOUNT_PATH
+        value: /var/requests
+      - name: AZURE_SERVICE_BUS_CONNECTION_STRING
+        secretRef: connection-string-secret
+      - name: SERVICE_BUS_REQUESTS_QUEUE_NAME
+        value: requests
+      - name: PROCESS_WAIT_MS
+        value: '10000'
+      image: acrjobs.azurecr.io/opentofu-dotnet-queue:latest
+      name: opentofu-dotnet-queue
+      volumeMounts:
+      - volumeName: mounted-azure-file-volume
+        mountPath: /var/requests
+      resources:
+        cpu: 0.25
+        ephemeralStorage: ''
+        memory: 0.5Gi
+    initContainers: null
+    volumes:
+    - name: mounted-azure-file-volume
+      storageName: acamountedshare
+      storageType: AzureFile
+  workloadProfileName: Consumption
+resourceGroup: azure-container-app-jobs
+systemData:
+  createdAt: '2024-05-18T08:00:47.299463'
+  createdBy: admin@eladtal.com
+  createdByType: User
+  lastModifiedAt: '2024-05-18T08:00:47.299463'
+  lastModifiedBy: admin@eladtal.com
+  lastModifiedByType: User
+type: Microsoft.App/jobs

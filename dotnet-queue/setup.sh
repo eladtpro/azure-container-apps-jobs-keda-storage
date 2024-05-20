@@ -20,7 +20,8 @@ else
       --replica-timeout 1800 --replica-retry-limit 0 --replica-completion-count 1 --parallelism 1 \
       --image $JOB_IMAGE \
       --registry-server $JOB_REGISTRY_SERVER \
-      --registry-identity $JOB_REGISTRY_IDENTITY \
+      --registry-username $JOB_REGISTRY_USERNAME \
+      --registry-password $JOB_REGISTRY_PASSWORD \
       --cpu "0.25" --memory "0.5Gi" \
       --min-executions 0 \
       --max-executions 1 \
@@ -28,6 +29,7 @@ else
       --scale-rule-type "azure-servicebus" \
       --scale-rule-metadata "namespace=$SERVICE_BUS_NAMESPACE" "queueName=$SERVICE_BUS_REQUESTS_QUEUE_NAME" "queueLength=1" \
       --scale-rule-auth "connection=connection-string-secret" \
+      --polling-interval 10 \
       --secrets "connection-string-secret=$SERVICE_BUS_CONNECTION_STRING" \
       --env-vars \
         "MOUNT_PATH=$MOUNT_PATH" \

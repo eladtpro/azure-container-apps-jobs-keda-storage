@@ -1,13 +1,47 @@
 
-# Container Apps Jobs
+# Elevate your IaC by running containerized OpenTofu jobs with Azure Container Apps Jobs
+In this tutorial, you will learn how to create a job in Azure Container Apps. You will create a job that runs a containerized task that processes blobs in an Azure Storage container. The job will run when a new blob is added to the container and will scale based on the number of blobs in the container.
+
 Azure Container Apps jobs enable you to run containerized tasks that execute for a finite duration and exit. You can use jobs to perform tasks such as data processing, machine learning, or any scenario where on-demand processing is required.
 
 Container apps and jobs run in the same [environment](https://learn.microsoft.com/en-us/azure/container-apps/environment), allowing them to share capabilities such as networking and logging.
 
 
-![Diagram](/assets/container-app-job-diagram.png)
+## Prerequisites
+- An Azure subscription. If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free).
+- An Azure Container Registry. If you don't have an Azure Container Registry, create one by following the instructions in the [Create a container registry](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal) article.
+- An Azure Log Analytics workspace. If you don't have an Azure Log Analytics workspace, create one by following the instructions in the [Create a Log Analytics workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/quick-create-workspace) article.
 
-## Creating resources
+
+## Scenario explained
+![Diagram](/assets/diagram.png)
+In the diagram above, the job is triggered by an event when a new configuration message is added to the Azure Service Bus queue. The job runs a containerized task that processes the blob. The job scales based on the number of messages in the queue. The job runs for a maximum of 10 times and will not run if there are no pending items in the queue. The job runs for a maximum of 30 minutes and will not retry if it fails. The job runs only one instance at a time.
+
+## Environment setup
+
+### Setting the shared variables
+Set the following variables to use throughout the tutorial. Replace the placeholder values with your own values.
+
+
+```
+RESOURCE_GROUP="azure-container-app-jobs"
+LOCATION="eastus"
+JOB_REGISTRY_NAME="<registry_name>"
+JOB_REGISTRY_SERVER="<registry_name>.azurecr.io"
+JOB_REGISTRY_IDENTITY="system"
+JOB_REGISTRY_USERNAME="<registry_username>"
+JOB_REGISTRY_PASSWORD="<registry_password>"
+ENVIRONMENT_NAME="env-container-jobs"
+LOGS_WORKSPACE_ID="<LOGS_WORKSPACE_ID>"
+LOGS_WORKSPACE_KEY="<LOGS_WORKSPACE_KEY>"
+SUBSCRIPTION_ID=00000000-0000-0000-0000-000000000000
+STORAGE_ACCOUNT_NAME="stcontainerappsmount"
+STORAGE_ACCOUNT_SKU="Standard_LRS"
+STORAGE_SHARE_NAME="acamountedshare"
+STORAGE_SHARE_DIRECTORY_NAME="acamountedshare"
+MOUNT_PATH=/var/requests
+```
+
 Log analytics + container registry -> manual
 
 
@@ -16,7 +50,7 @@ https://learn.microsoft.com/en-us/azure/container-registry/container-registry-au
 
 
 ## create Application - App Registration
-> Note: The following command creates an app registration with the name containerapps-jobs-github. The command also assigns the Contributor role to the app registration on the specified resource group. Replace the value of the --scopes parameter with the resource group where you want to create the entity.
+> **Note**: The following command creates an app registration with the name containerapps-jobs-github. The command also assigns the Contributor role to the app registration on the specified resource group. Replace the value of the --scopes parameter with the resource group where you want to create the entity.
 > the permissions are scoped to the resource group level. The app registration has the Contributor role on the specified resource group. The command also creates a service principal and assigns the Contributor role to the service principal on the specified resource group.
 > Push image to Azure Container Registry, Deploy Container App Job to Azure Container Apps.
 
@@ -29,6 +63,43 @@ az ad sp create-for-rbac --name containerapps-jobs-github --role Contributor --s
 ## create log analytics workspace
 
 
+
+## update volumes:
+
+```
+az containerapp job update --name opentofu-dotnet-queue --resource-group azure-container-app-jobs --yaml job.yaml
+```
+
+```
+  template:
+    containers:
+    - env:
+      - name: MOUNT_PATH
+        value: /var/requests
+      - name: AZURE_SERVICE_BUS_CONNECTION_STRING
+        secretRef: connection-string-secret
+      - name: SERVICE_BUS_REQUESTS_QUEUE_NAME
+        value: requests
+      - name: PROCESS_WAIT_MS
+        value: '10000'
+      image: acrjobs.azurecr.io/opentofu-dotnet-queue:latest
+      name: opentofu-dotnet-queue
+      volumeMounts:
+      - volumeName: mounted-azure-file-volume
+        mountPath: /var/requests
+      resources:
+        cpu: 0.25
+        ephemeralStorage: ''
+        memory: 0.5Gi
+    initContainers: null
+    volumes:
+    - name: mounted-azure-file-volume
+      storageName: acamountedshare
+      storageType: AzureFile
+  workloadProfileName: Consumption
+
+
+```
 
 ## Github action
 push image 
